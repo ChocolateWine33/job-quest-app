@@ -6,7 +6,7 @@ from core.db_setup import get_db
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from models.user import User
-from db_ops.user import get_user
+from db_ops.user import get_user, UserNotFoundError
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 
@@ -29,10 +29,28 @@ def create_access_token(data: dict) -> str:
 
     return encoded_jwt
 
-# what does this line do how to think about it  
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-# Why do I make Depends get db here but when creating in db_obs I don't
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
-    pass
-    # current_user = get_user() 
+
+
+    credential_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Couldn't validate credentials!",
+        headers={"WWW-Authenticate": "Bearer"},  # Tells the client: "Use a Bearer Token!"
+    )
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+        email = payload.get("sub")
+# Checking if email is None: is just your backend asking one final question before hitting the database:- 
+# "Does this token actually contain the identity claim (sub) required to log someone in?"
+        if email is None:
+            raise credential_exception
+    except JWTError:
+        raise credential_exception
+
+    try:
+        user = get_user(db=db, email=email)
+    except UserNotFoundError:
+        raise credential_exception
+    return user
