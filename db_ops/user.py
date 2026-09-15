@@ -7,8 +7,9 @@ class UserAlreadyExistsError(Exception):
         super().__init__(f"User with email '{email}' already exists!")
 
 class UserNotFoundError(Exception):
-    def __init__(self, email: str):
+    def __init__(self, email: str, id: int):
         self.email = email  
+        self.id = id
         super().__init__(f"User with email '{email}' is Not Found!")        
         
 
