@@ -24,18 +24,17 @@ def register_route(new_user: UserReg, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
 def login_route(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-
+    
     try:
         account_holder = get_user(db=db, email=form_data.username)
-        
         if not verify_password(
-            plain_password=form_data.password, 
+            plain_password=form_data.password,
             hashed_password=account_holder.hashed_password
         ):
             raise InvalidCredentialsError()
     except (UserNotFoundError, InvalidCredentialsError):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Credentials!")
-    
+
     access_token = create_access_token(data={"sub": account_holder.email})
     return{
         "access_token": access_token,

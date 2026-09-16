@@ -6,7 +6,7 @@ def save_cv_url(db: Session, user_id: int, cv_url: str):
 
     current_user = db.query(User).filter_by(id=user_id).one_or_none()
     if not current_user:
-        raise UserNotFoundError(user_id)
+        raise UserNotFoundError(id=user_id)
 
     current_user.cv_url = cv_url
     db.commit()

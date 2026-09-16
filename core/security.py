@@ -17,7 +17,7 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
-        ph.verify(hashed_password, plain_password)
+        return ph.verify(hashed_password, plain_password)
     except VerifyMismatchError:
         return False
 
@@ -40,9 +40,9 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         headers={"WWW-Authenticate": "Bearer"},  # Tells the client: "Use a Bearer Token!"
     )
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         email = payload.get("sub")
-# Checking if email is None: is just your backend asking one final question before hitting the database:- 
+# Checking if email is None: is just your backend asking one final question before hitting the database:-
 # "Does this token actually contain the identity claim (sub) required to log someone in?"
         if email is None:
             raise credential_exception
