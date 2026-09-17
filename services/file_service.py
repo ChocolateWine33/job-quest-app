@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File
 from core.config import supabase  # Import the client created above
 import uuid
 
+# TODO: verify supabase client blocking behavior
 async def save_file(cv_file: UploadFile, user_id: int) -> str:
    # Validate MIME type
     if cv_file.content_type != "application/pdf":
