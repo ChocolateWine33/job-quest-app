@@ -1,16 +1,19 @@
 from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File
 from core.config import supabase  # Import the client created above
 import uuid
+import io
+import httpx
+from pypdf import PdfReader
 
-async def save_file(cv_file: UploadFile, user_id: int) -> str:
+def save_file(cv_file: UploadFile, user_id: int) -> str:
    # Validate MIME type
     if cv_file.content_type != "application/pdf":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Only PDF files are allowed."
         )
-    
-    file_bytes = await cv_file.read()
+
+    file_bytes = cv_file.read()
 
     # Generate a unique filename (cv_<user_id>_<uuid>.pdf)
     file_extension = cv_file.filename.split(".")[-1]
@@ -32,3 +35,19 @@ async def save_file(cv_file: UploadFile, user_id: int) -> str:
     cv_public_url = supabase.storage.from_("resumes").get_public_url(unique_filename)
     return cv_public_url
 
+async def extract_text_from_url(cv_url: str) -> str:
+    # 1. Download the PDF file bytes from the Supabase URL
+    async with httpx.AsyncClient() as client:
+        response = await client.get(cv_url)
+        response.raise_for_status()
+    # 2. Load the bytes into an in-memory stream
+    pdf_file_in_memory = io.BytesIO(response.content)
+
+    # 3. Read and extract text page by page
+    reader = PdfReader(pdf_file_in_memory)
+    cv_text = "".join(page.extract_text() for page in reader.pages).strip()
+    if not cv_text:
+        return{
+            "Error": "Please enter a cv that has content in it!"
+        }
+    return cv_text
