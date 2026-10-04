@@ -6,7 +6,7 @@ import httpx
 from pypdf import PdfReader
 
 # TODO: verify supabase client blocking behavior
-async def save_file(cv_file: UploadFile, user_id: int) -> str:
+def save_file(cv_file: UploadFile, user_id: int) -> str:
    # Validate MIME type
     if cv_file.content_type != "application/pdf":
         raise HTTPException(
@@ -48,7 +48,8 @@ async def extract_text_from_url(cv_url: str) -> str:
     reader = PdfReader(pdf_file_in_memory)
     cv_text = "".join(page.extract_text() for page in reader.pages).strip()
     if not cv_text:
-        return{
-            "Error": "Please enter a cv that has content in it!"
-        }
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please upload a CV that contains text."
+        )
     return cv_text

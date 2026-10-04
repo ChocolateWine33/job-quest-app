@@ -27,12 +27,13 @@ def save_cv_text(db:Session, user_id: int, cv_text: str) -> Resume:
 
     if existing_cv_text:
         existing_cv_text.cv_text = cv_text
-
-    new_resume = Resume(user_id=user_id, cv_text=cv_text)
-    db.add(new_resume)
+        resume = existing_cv_text
+    else:
+        resume = Resume(user_id=user_id, cv_text=cv_text)
+        db.add(resume)
     db.commit()
-    db.refresh(new_resume)
-    return new_resume
+    db.refresh(resume)
+    return resume
 
 
 
