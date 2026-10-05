@@ -36,11 +36,16 @@ def save_file(cv_file: UploadFile, user_id: int) -> str:
     cv_public_url = supabase.storage.from_("resumes").get_public_url(unique_filename)
     return cv_public_url
 
-async def extract_text_from_url(cv_url: str) -> str:
+def extract_text_from_url(cv_url: str) -> str:
     # 1. Download the PDF file bytes from the Supabase URL
-    async with httpx.AsyncClient() as client:
-        response = await client.get(cv_url)
+    try:
+        response = httpx.get(cv_url)
         response.raise_for_status()
+    except httpx.HTTPError as e:
+        raise HTTPException (
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to download CV text From the url: {e}"
+        )
     # 2. Load the bytes into an in-memory stream
     pdf_file_in_memory = io.BytesIO(response.content)
 
