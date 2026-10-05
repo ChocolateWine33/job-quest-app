@@ -5,7 +5,7 @@ from core.db_setup import get_db
 from core.security import get_current_user
 from pydantic import BaseModel
 from google import genai
-from db_ops.retrieval import get_cv_text_by_user, CvNotFoundedError
+from db_ops.retrieval_save import get_cv_text_by_user, CvNotFoundedError
 
 router = APIRouter(tags=["AI Assistant"])
 

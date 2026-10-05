@@ -1,12 +1,19 @@
 from sqlalchemy.orm import Session
 from models.cvs import Resume
+from models.messages import Chat
 
 
 class CvNotFoundedError (Exception):
     pass
 
 def get_messages_by_user(db: Session, user_id: int) -> list:
-    pass
+
+    chat_history = (db.query(Chat)
+                    .filter_by(user_id=user_id)
+                    .order_by(Chat.date.asc())
+                    .all()
+                    )
+    return chat_history
 
 def get_cv_text_by_user(db: Session, user_id: int) -> str:
 
@@ -15,3 +22,6 @@ def get_cv_text_by_user(db: Session, user_id: int) -> str:
     if cv_text is None:
         raise CvNotFoundedError(f"No CV found for user ID {user_id}")
     return cv_text
+
+def save_message(db: Session, user_id: int):
+    pass
