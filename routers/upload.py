@@ -20,7 +20,7 @@ def upload_route(cv_file: UploadFile = File(...),
         save_cv_url(db=db, user_id=user.id, cv_url=cv_public_url)
     except UserNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="User Not Found!")
-    
+
     save_cv_text(db=db, user_id=user.id, cv_text=cv_text)
     
     return {
