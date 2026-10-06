@@ -23,5 +23,9 @@ def get_cv_text_by_user(db: Session, user_id: int) -> str:
         raise CvNotFoundedError(f"No CV found for user ID {user_id}")
     return cv_text
 
-def save_message(db: Session, user_id: int):
-    pass
+def save_message(db: Session, role: str, user_id: int, content: str):
+
+    new_message = Chat(role=role, user_id=user_id, message_content=content)
+    db.add(new_message)
+    db.commit()
+    db.refresh(new_message)

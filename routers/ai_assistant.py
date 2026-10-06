@@ -5,14 +5,14 @@ from core.db_setup import get_db
 from core.security import get_current_user
 from pydantic import BaseModel
 from google import genai
-from db_ops.retrieval_save import get_cv_text_by_user, CvNotFoundedError
+from db_ops.retrieval_save import get_cv_text_by_user, get_messages_by_user, CvNotFoundedError
 
 router = APIRouter(tags=["AI Assistant"])
 
 class Message (BaseModel):
     content: str
 
-client = genai.Client()    
+client = genai.Client()
 
 @router.post("/ask")
 def send_chat_route(message: Message,
@@ -25,9 +25,16 @@ def send_chat_route(message: Message,
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
         )
-    
+
+    chat_history = get_messages_by_user(db=db, user_id=user.id)
 
     contents = []
+    for chat in chat_history:
+        contents.append({"role": chat.role, "parts": [{"text": chat.message_content}]})
+
+    contents.append({"role": "user", "parts": [{"text": message.content}]})
+
+
 
 
 #     response = client.models.generate_content(
