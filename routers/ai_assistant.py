@@ -6,7 +6,8 @@ from core.security import get_current_user
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
-from db_ops.retrieval_save import get_cv_text_by_user, get_messages_by_user, save_message ,CvNotFoundedError
+from db_ops.retrieval_save import get_cv_text_by_user, get_messages_by_user, save_message ,CvNotFoundError
+from services.ai_service import get_contents
 
 router = APIRouter(tags=["AI Assistant"])
 
@@ -19,9 +20,10 @@ client = genai.Client()
 def send_chat_route(message: Message,
                     db: Session = Depends(get_db),
                     user: User = Depends(get_current_user)):
+
     try:
         cv_text = get_cv_text_by_user(db=db, user_id=user.id)
-    except CvNotFoundedError as e:
+    except CvNotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
@@ -29,11 +31,7 @@ def send_chat_route(message: Message,
 
     chat_history = get_messages_by_user(db=db, user_id=user.id)
 
-    contents = []
-    for chat in chat_history:
-        contents.append({"role": chat.role, "parts": [{"text": chat.message_content}]})
-
-    contents.append({"role": "user", "parts": [{"text": message.content}]})
+    contents = get_contents(chat_history=chat_history, user_message=message.content)
 
     response = client.models.generate_content(
     model="gemini-3.6-flash",

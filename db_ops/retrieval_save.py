@@ -3,7 +3,7 @@ from models.cvs import Resume
 from models.messages import Chat
 
 
-class CvNotFoundedError (Exception):
+class CvNotFoundError (Exception):
     pass
 
 def get_messages_by_user(db: Session, user_id: int) -> list:
