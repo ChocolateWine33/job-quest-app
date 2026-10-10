@@ -39,6 +39,7 @@ def send_chat_route(message: Message,
             detail="The assistant couldn't generate a reply, please try again!"
         )
 
+    #What happens if one message got saved and the other one is not? Check Later
     save_message(db=db, role="user", user_id=user.id, content=message.content)
     save_message(db=db, role="model", user_id=user.id, content=response)
 

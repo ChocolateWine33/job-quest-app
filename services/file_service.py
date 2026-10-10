@@ -14,7 +14,7 @@ def save_file(cv_file: UploadFile, user_id: int) -> str:
             detail="Only PDF files are allowed."
         )
 
-    file_bytes = cv_file.read()
+    file_bytes = cv_file.file.read()
 
     # Generate a unique filename (cv_<user_id>_<uuid>.pdf)
     file_extension = cv_file.filename.split(".")[-1]

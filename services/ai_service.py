@@ -43,10 +43,10 @@ def get_contents(chat_history: list,  user_message: str) -> list:
     contents = []
 
     if chat_history and chat_history[0].role == "model":
-        chat_history = chat_history[1:]
-        
+        chat_history = chat_history[1:] 
+
     for chat in chat_history:
-        contents.append({"role": chat.role, "parts": [{"text": chat.message_content}]})
+            contents.append({"role": chat.role, "parts": [{"text": chat.message_content}]})
 
     contents.append({"role": "user", "parts": [{"text": user_message}]})
 

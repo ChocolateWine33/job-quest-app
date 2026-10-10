@@ -11,7 +11,6 @@ CHAT_HISTORY_LIMIT = 40
 def get_messages_by_user(db: Session, user_id: int) -> list:
 
 
-
     chat_history = (db.query(Chat)
                     .filter_by(user_id=user_id)
                     .order_by(Chat.date.desc())
@@ -19,7 +18,8 @@ def get_messages_by_user(db: Session, user_id: int) -> list:
                     .all()
                     )
 
-    return chat_history.reverse()
+    chat_history.reverse()
+    return chat_history
 
 def get_cv_text_by_user(db: Session, user_id: int) -> str:
 
