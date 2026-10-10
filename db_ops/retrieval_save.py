@@ -6,16 +6,20 @@ from models.messages import Chat
 class CvNotFoundError (Exception):
     pass
 
+CHAT_HISTORY_LIMIT = 40
+
 def get_messages_by_user(db: Session, user_id: int) -> list:
 
-    chat_history_limit = 40
-    
+
+
     chat_history = (db.query(Chat)
                     .filter_by(user_id=user_id)
-                    .order_by(Chat.date.asc())
+                    .order_by(Chat.date.desc())
+                    .limit(CHAT_HISTORY_LIMIT)
                     .all()
                     )
-    return chat_history
+
+    return chat_history.reverse()
 
 def get_cv_text_by_user(db: Session, user_id: int) -> str:
 

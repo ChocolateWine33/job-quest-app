@@ -33,15 +33,17 @@ Style: concise and concrete. Prefer specific suggestions over generic advice.
 <cv>
 {cv_text}
 </cv>
-    """   
+    """
 
 class AiResponseError(Exception):
     pass
 
-def get_contents(chat_history: list,  user_message: str, contents: list | None = None) -> list:
+def get_contents(chat_history: list,  user_message: str) -> list:
 
-    if contents is None:
-        contents = []
+    contents = []
+
+    if chat_history and chat_history[0].role == "model":
+        chat_history = chat_history[1:]
         
     for chat in chat_history:
         contents.append({"role": chat.role, "parts": [{"text": chat.message_content}]})
@@ -53,7 +55,7 @@ def get_contents(chat_history: list,  user_message: str, contents: list | None =
 
 def get_ai_response(contents: list, cv_text: str) -> str:
 
-    system_prompt = SYSTEM_PROMPT_TEMPLATE.format(cv_text=cv_text)    
+    system_prompt = SYSTEM_PROMPT_TEMPLATE.format(cv_text=cv_text)
     response = client.models.generate_content(
     model="gemini-3.6-flash",
     contents=contents,
