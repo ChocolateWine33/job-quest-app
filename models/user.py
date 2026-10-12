@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String, Integer, Date
 from core.db_setup import BASE
 import datetime
@@ -14,4 +13,3 @@ class User(BASE):
     joined_date = Column(Date, default=get_date)
     cv_url = Column(String, nullable=True)
 
-    

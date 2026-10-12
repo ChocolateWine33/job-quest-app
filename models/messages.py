@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 from core.db_setup import BASE
 import datetime
