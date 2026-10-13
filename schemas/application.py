@@ -1,6 +1,6 @@
 from datetime import date
 from pydantic import BaseModel, ConfigDict
-
+from enum import Enum
 
 class JobApplication (BaseModel):
     company_name: str
@@ -15,3 +15,10 @@ class ApplicationResponse(BaseModel):
     status: str
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ApplicationStatus(str, Enum):
+    APPLIED = "Applied"
+    INTERVIEW = "Interview"
+    REJECTED = "Rejected"
+    OFFER = "Offer"

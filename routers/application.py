@@ -28,3 +28,9 @@ def get_applications(db: Session = Depends(get_db),
 
     applications = get_user_applications(user_id=user.id, db=db)
     return applications
+
+
+@router.put("/update_application_status/{application_id}")
+def update_application_status(db: Session = Depends(get_db),
+                            user: User = Depends(get_current_user)):
+    pass
