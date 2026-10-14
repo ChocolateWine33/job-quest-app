@@ -36,3 +36,5 @@ def get_user_applications(db: Session, user_id: int) -> list:
     return applications
 
 
+def update_user_application(db: Session, user_id: int, status: str):
+    pass

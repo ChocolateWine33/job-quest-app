@@ -22,3 +22,7 @@ class ApplicationStatus(str, Enum):
     INTERVIEW = "Interview"
     REJECTED = "Rejected"
     OFFER = "Offer"
+
+class ApplicationStatusUpdate(BaseModel):
+    status = ApplicationStatus
+

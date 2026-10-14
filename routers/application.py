@@ -4,7 +4,7 @@ from models.user import User
 from core.db_setup import get_db
 from core.security import get_current_user
 from db_ops.application_tracker import add_application, get_user_applications, DuplicateApplicationError
-from schemas.application import ApplicationResponse, JobApplication
+from schemas.application import ApplicationResponse, JobApplication, ApplicationStatusUpdate
 
 router = APIRouter(tags=["Application Tracker"])
 
@@ -30,7 +30,9 @@ def get_applications(db: Session = Depends(get_db),
     return applications
 
 
-@router.put("/update_application_status/{application_id}")
-def update_application_status(db: Session = Depends(get_db),
-                            user: User = Depends(get_current_user)):
+@router.patch("/update_application_status/{application_id}")
+def update_application_status(application_id: int,
+                              update: ApplicationStatusUpdate,
+                              db: Session = Depends(get_db),
+                            user: User = Depends(get_current_user),):
     pass
