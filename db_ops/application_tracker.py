@@ -36,5 +36,15 @@ def get_user_applications(db: Session, user_id: int) -> list:
     return applications
 
 
-def update_user_application(db: Session, user_id: int, status: str):
-    pass
+def update_user_application(db: Session, user_id: int, application_id: int, status: str):
+
+
+    current_application_status = (db.query(Application)
+                                  .filter_by(user_id=user_id, id=application_id)
+                                  .first())
+
+    current_application_status.status = status
+
+    db.commit()
+
+    return current_application_status
