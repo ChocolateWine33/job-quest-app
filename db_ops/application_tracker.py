@@ -5,6 +5,10 @@ from sqlalchemy.exc import IntegrityError
 class DuplicateApplicationError(Exception):
     pass
 
+class ApplicationNotFoundError(Exception):
+    pass
+
+
 def add_application(user_id: int,
                     company_name: str,
                     role: str,
@@ -39,12 +43,29 @@ def get_user_applications(db: Session, user_id: int) -> list:
 def update_user_application(db: Session, user_id: int, application_id: int, status: str):
 
 
-    current_application_status = (db.query(Application)
+    current_application = (db.query(Application)
                                   .filter_by(user_id=user_id, id=application_id)
                                   .first())
 
-    current_application_status.status = status
+    if current_application is None:
+        raise ApplicationNotFoundError()
+
+    current_application.status = status
 
     db.commit()
 
-    return current_application_status
+    return current_application
+
+
+def delete_user_application(db: Session, user_id: int, application_id: int):
+
+    current_application = (db.query(Application)
+                                      .filter_by(user_id=user_id, id=application_id)
+                                      .first())
+    if current_application is None:
+            raise ApplicationNotFoundError()
+
+    db.delete(current_application)
+    db.commit()
+
+    
