@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from models.applications import Application
 from sqlalchemy.exc import IntegrityError
 
+
 class DuplicateApplicationError(Exception):
     pass
 
@@ -40,7 +41,7 @@ def get_user_applications(db: Session, user_id: int) -> list:
     return applications
 
 
-def update_user_application(db: Session, user_id: int, application_id: int, status: str):
+def update_user_application(db: Session, user_id: int, application_id: int, status: str) -> Application:
 
 
     current_application = (db.query(Application)
@@ -68,4 +69,20 @@ def delete_user_application(db: Session, user_id: int, application_id: int):
     db.delete(current_application)
     db.commit()
 
-    
+
+def get_applications_dates(db: Session, user_id: int) -> list:
+
+    rows = (db.query(Application.apply_date)
+             .filter_by(user_id=user_id)
+             .distinct()
+             .order_by(Application.apply_date.desc())
+             .all())
+
+    dates = [row[0] for row in rows]
+
+    return dates
+
+
+
+
+
