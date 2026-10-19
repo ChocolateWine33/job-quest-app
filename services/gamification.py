@@ -28,8 +28,6 @@ def calculate_user_streak(application_dates: list) -> int:
 
 def get_user_stats(application_count: int, status_count: dict) -> dict:
 
-    xp = 0
-    random_xp_number = random.randint(10, 25)
     titles = {
         1: "Job Hunter",
         5: "Resume Rookie",
@@ -40,14 +38,15 @@ def get_user_stats(application_count: int, status_count: dict) -> dict:
         85: "Application Veteran",
         100: "Legendary Job Hunter"
     }
-    user_titles = []
 
-    if application_count in titles:
-        if titles[application_count] not in user_titles:
-            user_titles.append(titles[application_count])
-            xp += random_xp_number
-        else:
-            pass
-    else:
-        pass
+    user_stats = {
+        "title": [],
+        "xp": []
+    }
+
+    for key in titles:
+        if application_count >= key:
+            user_stats["title"].append(titles[key])
+            # fix this xp thing
+            # user_stats["xp"].append(random.randint(10, 25))
 
