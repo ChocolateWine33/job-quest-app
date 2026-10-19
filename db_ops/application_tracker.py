@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from models.applications import Application
 from sqlalchemy.exc import IntegrityError
-
+from sqlalchemy import func
 
 class DuplicateApplicationError(Exception):
     pass
@@ -83,6 +83,20 @@ def get_applications_dates(db: Session, user_id: int) -> list:
     return dates
 
 
+def get_applications_data(db: Session, user_id: int) -> dict:
 
 
+    rows = (
+        db.query(Application.status, func.count(Application.id))
+        .filter_by(user_id=user_id)
+        .group_by(Application.status)
+        .all()
+    )
 
+    status_counts = dict(rows)
+    application_count = sum(status_counts.values())
+
+    return{
+        "application_count": application_count,
+        "status_counts": status_counts
+    }

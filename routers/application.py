@@ -5,7 +5,7 @@ from core.db_setup import get_db
 from core.security import get_current_user
 from db_ops.application_tracker import add_application, get_user_applications, update_user_application, delete_user_application, get_applications_dates, DuplicateApplicationError,ApplicationNotFoundError
 from schemas.application import ApplicationResponse, JobApplication, ApplicationStatusUpdate
-from services.streak import calculate_user_streak
+from services.gamification import calculate_user_streak
 
 router = APIRouter(tags=["Application Tracker"])
 
