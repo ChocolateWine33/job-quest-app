@@ -46,3 +46,11 @@ def send_chat_route(message: Message,
     return {
         "AI_assistant": response
     }
+
+@router.post("/application_analysis/{application_id}", status_code=status.HTTP_201_CREATED)
+def add_application_route(application_id: int,
+                           db: Session = Depends(get_db),
+                           user: User = Depends(get_current_user)):
+
+
+    pass

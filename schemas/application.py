@@ -5,6 +5,7 @@ from enum import Enum
 class JobApplication (BaseModel):
     company_name: str
     role: str
+    job_description: str | None = None
 
 class ApplicationStatus(str, Enum):
     APPLIED = "Applied"

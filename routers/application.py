@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 from models.user import User
 from core.db_setup import get_db
 from core.security import get_current_user
-from db_ops.application_tracker import add_application, get_user_applications, update_user_application, delete_user_application, get_applications_dates, DuplicateApplicationError,ApplicationNotFoundError
+from db_ops.application_tracker import add_application, get_user_applications, update_user_application, delete_user_application, get_applications_dates, get_applications_data, DuplicateApplicationError,ApplicationNotFoundError
 from schemas.application import ApplicationResponse, JobApplication, ApplicationStatusUpdate
-from services.gamification import calculate_user_streak
+from services.gamification import build_progress
 
 router = APIRouter(tags=["Application Tracker"])
 
@@ -24,14 +24,14 @@ def add_application_route(job_application: JobApplication,
             detail=str(e)
         )
 
-@router.get("/streak")
-def get_user_streak(db: Session = Depends(get_db),
+@router.get("/progress")
+def get_progress(db: Session = Depends(get_db),
                     user: User = Depends(get_current_user)):
 
     dates = get_applications_dates(db=db, user_id=user.id)
+    user_data = get_applications_data(db=db, user_id=user.id)
 
-    streak = calculate_user_streak(dates)
-    return {"streak": streak}
+    return build_progress(user_data["application_count"], user_data["status_counts"], dates, user.id)
 
 
 @router.get("/get_applications", response_model=list[ApplicationResponse])
@@ -53,9 +53,8 @@ def update_application_status(application_id: int,
     except ApplicationNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=("We couldn't find that applicaiton, Please Try again!")
+            detail=("We couldn't find that application, Please Try again!")
         )
-
 
 @router.delete("/delete_application/{application_id}")
 def delete_application(application_id: int,

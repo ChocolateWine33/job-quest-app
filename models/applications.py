@@ -15,6 +15,8 @@ class Application(BASE):
     apply_date = Column(Date, default=get_date)
     role_name = Column(String, nullable=False)
     status = Column(String, nullable=False, default="Applied")
+    job_description = Column(String, nullable=True)
+    application_analysis = Column(String, nullable=True)
 
 
     __table_args__ = (
