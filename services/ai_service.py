@@ -112,6 +112,7 @@ def get_ai_response(contents: list, cv_text: str) -> str:
 
 
 def get_application_analysis(cv_text: str, job_description: str) -> ApplicationAnalysis:
+
     analysis_instructions = ANALYSIS_PROMPT.format(cv_text=cv_text)
     response = client.models.generate_content(
     model="gemini-3.6-flash",

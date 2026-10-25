@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from models.applications import Application
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
-
+from schemas.ai_job_assistant import ApplicationAnalysis
 class DuplicateApplicationError(Exception):
     pass
 
@@ -40,6 +40,14 @@ def get_user_applications(db: Session, user_id: int) -> list:
                     .all())
     return applications
 
+def get_a_single_user_application(db: Session, user_id: int, application_id: int) -> Application:
+
+    application = (db.query(Application)
+                    .filter_by(user_id=user_id, id=application_id)
+                    .first())
+    if application is None:
+        raise ApplicationNotFoundError()
+    return application
 
 def update_user_application(db: Session, user_id: int,
                             application_id: int,
@@ -107,3 +115,13 @@ def get_applications_data(db: Session, user_id: int) -> dict:
         "application_count": application_count,
         "status_counts": status_counts
     }
+
+def save_application_analysis(db: Session,
+                              application: Application,
+                              analysis: ApplicationAnalysis) -> Application:
+
+    application.application_analysis = analysis.model_dump_json()
+
+    db.commit()
+
+    return application
