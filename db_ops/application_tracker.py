@@ -41,7 +41,10 @@ def get_user_applications(db: Session, user_id: int) -> list:
     return applications
 
 
-def update_user_application(db: Session, user_id: int, application_id: int, status: str) -> Application:
+def update_user_application(db: Session, user_id: int,
+                            application_id: int,
+                            status: str | None = None,
+                            job_description: str | None = None) -> Application:
 
 
     current_application = (db.query(Application)
@@ -51,7 +54,11 @@ def update_user_application(db: Session, user_id: int, application_id: int, stat
     if current_application is None:
         raise ApplicationNotFoundError()
 
-    current_application.status = status
+    if status is not None:
+        current_application.status = status
+
+    if job_description is not None:
+        current_application.job_description = job_description
 
     db.commit()
 

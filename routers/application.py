@@ -7,6 +7,7 @@ from db_ops.application_tracker import add_application, get_user_applications, u
 from schemas.application import ApplicationResponse, JobApplication, ApplicationStatusUpdate
 from services.gamification import build_progress
 
+
 router = APIRouter(tags=["Application Tracker"])
 
 

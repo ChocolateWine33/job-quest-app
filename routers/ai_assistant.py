@@ -3,16 +3,12 @@ from sqlalchemy.orm import Session
 from models.user import User
 from core.db_setup import get_db
 from core.security import get_current_user
-from pydantic import BaseModel
-from google import genai
-from google.genai import types
 from db_ops.retrieval_save import get_cv_text_by_user, get_messages_by_user, save_message ,CvNotFoundError
 from services.ai_service import get_contents, get_ai_response, AiResponseError
+from schemas.ai_job_assistant import Message
+
 
 router = APIRouter(tags=["AI Assistant"])
-
-class Message (BaseModel):
-    content: str
 
 
 @router.post("/ask")
@@ -47,10 +43,10 @@ def send_chat_route(message: Message,
         "AI_assistant": response
     }
 
-@router.post("/application_analysis/{application_id}", status_code=status.HTTP_201_CREATED)
-def add_application_route(application_id: int,
+@router.post("/application_analysis/{application_id}")
+def get_application_analysis_route(application_id: int,
                            db: Session = Depends(get_db),
                            user: User = Depends(get_current_user)):
 
 
-    pass
+    ...
