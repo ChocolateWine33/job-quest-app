@@ -30,7 +30,7 @@ def send_chat_route(message: Message,
 
     try:
         response = get_ai_response(contents=contents, cv_text=cv_text)
-    except AiResponseError:
+    except (Exception, AiResponseError):
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="The assistant couldn't generate a reply, please try again!"
@@ -63,8 +63,13 @@ def create_application_analysis_route(application_id: int,
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Please add a job description to that application!"
         ) 
-    
-    analysis = get_application_analysis(cv_text=cv_text, job_description=application.job_description)
+    try:
+        analysis = get_application_analysis(cv_text=cv_text, job_description=application.job_description)
+    except (Exception, AiResponseError):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="The assistant couldn't generate a reply, please try again!"
+        )
     save_application_analysis(db=db, application=application, analysis=analysis)
     return analysis
    

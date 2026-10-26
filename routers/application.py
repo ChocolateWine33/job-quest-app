@@ -4,7 +4,7 @@ from models.user import User
 from core.db_setup import get_db
 from core.security import get_current_user
 from db_ops.application_tracker import add_application, get_user_applications, update_user_application, delete_user_application, get_applications_dates, get_applications_data, DuplicateApplicationError,ApplicationNotFoundError
-from schemas.application import ApplicationResponse, JobApplication, ApplicationStatusUpdate
+from schemas.application import ApplicationResponse, JobApplication, ApplicationUpdate
 from services.gamification import build_progress
 
 
@@ -43,13 +43,17 @@ def get_applications(db: Session = Depends(get_db),
     return applications
 
 
-@router.patch("/update_application_status/{application_id}", response_model=ApplicationResponse)
-def update_application_status(application_id: int,
-                              update: ApplicationStatusUpdate,
-                              db: Session = Depends(get_db),
-                            user: User = Depends(get_current_user),):
+@router.patch("/update_application/{application_id}", response_model=ApplicationResponse)
+def update_application(application_id: int,
+                        update: ApplicationUpdate,
+                        db: Session = Depends(get_db),
+                        user: User = Depends(get_current_user),):
     try:
-        application = update_user_application(db=db, user_id=user.id, application_id=application_id, status=update.status.value)
+        application = update_user_application(db=db,
+                                               user_id=user.id,
+                                                application_id=application_id,
+                                                status=update.status.value if update.status is not None else None,
+                                                job_description=update.job_description)
         return application
     except ApplicationNotFoundError:
         raise HTTPException(

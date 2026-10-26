@@ -1,6 +1,7 @@
 from datetime import date
 from pydantic import BaseModel, ConfigDict, Field
 from enum import Enum
+from schemas.ai_job_assistant import ApplicationAnalysis
 
 class JobApplication (BaseModel):
     company_name: str
@@ -13,7 +14,7 @@ class ApplicationStatus(str, Enum):
     REJECTED = "Rejected"
     OFFER = "Offer"
 
-class ApplicationStatusUpdate(BaseModel):
+class ApplicationUpdate(BaseModel):
     status: ApplicationStatus | None = None
     job_description: str | None = Field(default=None, min_length=300, max_length=10000)
 
@@ -25,6 +26,7 @@ class ApplicationResponse(BaseModel):
     role_name: str
     status: ApplicationStatus
     job_description: str | None = None
+    application_analysis: str | None = None
     
     model_config = ConfigDict(from_attributes=True)
 
