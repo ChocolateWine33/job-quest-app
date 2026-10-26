@@ -18,7 +18,7 @@ def add_application_route(job_application: JobApplication,
 
 
     try:
-        return add_application(db=db,user_id=user.id,company_name=job_application.company_name,role=job_application.role)
+        return add_application(db=db,user_id=user.id,company_name=job_application.company_name,role=job_application.role, job_description=job_application.job_description)
     except DuplicateApplicationError as e:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

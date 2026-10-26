@@ -13,13 +13,14 @@ class ApplicationNotFoundError(Exception):
 def add_application(user_id: int,
                     company_name: str,
                     role: str,
+                    job_description: str,
                     db: Session) -> Application:
 
     existing_application = db.query(Application).filter_by(user_id=user_id, company_name=company_name, role_name=role).first()
     if existing_application:
         raise DuplicateApplicationError("You have already submitted this application!")
 
-    new_application = Application(company_name=company_name, role_name=role, user_id=user_id)
+    new_application = Application(company_name=company_name, role_name=role, job_description=job_description, user_id=user_id)
 
     db.add(new_application)
     try:

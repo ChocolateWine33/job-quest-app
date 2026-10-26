@@ -24,8 +24,8 @@ class ApplicationResponse(BaseModel):
     apply_date: date
     role_name: str
     status: ApplicationStatus
-    job_description : str
-
+    job_description: str | None = None
+    
     model_config = ConfigDict(from_attributes=True)
 
 
