@@ -1,10 +1,19 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from core.db_setup import BASE, engine
 from routers import authentication, upload, ai_assistant, application
 
 BASE.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Job Quest")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5500"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(authentication.router)
 app.include_router(upload.router)
