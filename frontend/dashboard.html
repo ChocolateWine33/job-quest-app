@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job Quest — Quest board</title>
+  <link rel="stylesheet" href="app.css">
+  <script src="dashboard.js" defer></script>
+</head>
+<body class="dashboard-page">
+  <header class="dashboard-header">
+    <a class="brand" href="dashboard.html" aria-label="Job Quest quest board">
+      <span class="brand-mark" aria-hidden="true">↗</span>
+      <span>Job Quest</span>
+    </a>
+    <div class="account-actions">
+      <span class="account-chip">
+        <span class="account-avatar" aria-hidden="true">⚔</span>
+        <span id="signed-in-email">Adventurer</span>
+      </span>
+      <button id="logout-button" class="button secondary" type="button">Log out</button>
+    </div>
+  </header>
+
+  <main class="dashboard-shell">
+    <section class="dashboard-welcome">
+      <div>
+        <p class="eyebrow">Your quest board</p>
+        <h1>Every application moves you forward.</h1>
+      </div>
+      <img
+        class="welcome-adventurer"
+        src="quest-adventurer.svg"
+        alt=""
+        aria-hidden="true"
+      >
+      <p>Keep your momentum, track your opportunities, and celebrate each step.</p>
+    </section>
+
+    <p id="dashboard-message" class="dashboard-message" role="status" aria-live="polite">
+      Loading your quest…
+    </p>
+
+    <section class="stats-grid" aria-label="Your progress">
+      <article class="stat-card title-stat">
+        <span class="stat-label">Current title</span>
+        <strong id="current-title" class="stat-value">Loading…</strong>
+        <span id="titles-unlocked" class="stat-note"></span>
+      </article>
+
+      <article class="stat-card level-stat">
+        <div class="level-heading">
+          <div>
+            <span class="stat-label">Hero level</span>
+            <strong id="current-level" class="stat-value">—</strong>
+          </div>
+          <span class="level-icon" aria-hidden="true">✦</span>
+        </div>
+        <div
+          id="xp-progress"
+          class="xp-track"
+          role="progressbar"
+          aria-label="XP progress toward next level"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <div id="xp-fill" class="xp-fill"></div>
+        </div>
+        <span id="xp-label" class="stat-note">Loading XP…</span>
+      </article>
+
+      <article class="stat-card streak-stat">
+        <div class="streak-heading">
+          <span class="streak-fire" aria-hidden="true">🔥</span>
+          <span class="stat-label">Application streak</span>
+        </div>
+        <strong id="current-streak" class="stat-value">—</strong>
+        <span class="stat-note">days of showing up</span>
+      </article>
+    </section>
+
+    <div class="dashboard-columns">
+      <section class="applications-panel" aria-labelledby="applications-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Your opportunities</p>
+            <h2 id="applications-title">Application collection</h2>
+          </div>
+          <span id="application-count" class="count-badge">0 quests</span>
+        </div>
+        <div id="applications-list" class="applications-list" aria-live="polite">
+          <p class="empty-state">Loading your applications…</p>
+        </div>
+      </section>
+
+      <aside class="dashboard-sidebar">
+        <section class="dashboard-card cv-card" aria-labelledby="cv-title">
+          <span class="card-icon" aria-hidden="true">🎒</span>
+          <p class="eyebrow">Quest gear</p>
+          <h2 id="cv-title">Your CV</h2>
+          <p class="card-copy">
+            Upload a text-based PDF to prepare your CV for personalized AI support.
+          </p>
+          <div id="current-cv" class="current-cv">
+            <span class="current-cv-icon" aria-hidden="true">📄</span>
+            <div>
+              <strong id="current-cv-name">No CV uploaded in this browser yet</strong>
+              <a id="current-cv-link" href="#" target="_blank" rel="noopener noreferrer" hidden>
+                View current CV
+              </a>
+            </div>
+          </div>
+          <form id="cv-form">
+            <label>
+              Choose a PDF
+              <input
+                name="cv_file"
+                type="file"
+                accept=".pdf,application/pdf"
+                required
+              >
+            </label>
+            <button class="button" type="submit">Upload CV</button>
+          </form>
+          <p id="cv-result" class="inline-message" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="dashboard-card add-card" aria-labelledby="add-title">
+          <p class="eyebrow">New mission</p>
+          <h2 id="add-title">Add an application</h2>
+          <form id="application-form">
+            <label>
+              Company
+              <input name="company_name" type="text" maxlength="255" required>
+            </label>
+            <label>
+              Role
+              <input name="role" type="text" maxlength="255" required>
+            </label>
+            <label>
+              Job description <span class="optional-label">optional</span>
+              <textarea
+                name="job_description"
+                rows="4"
+                minlength="300"
+                maxlength="10000"
+                placeholder="Add at least 300 characters if you include a description."
+              ></textarea>
+            </label>
+            <button class="button" type="submit">Add to my quests</button>
+          </form>
+          <p id="application-result" class="inline-message" role="status" aria-live="polite"></p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <aside class="ai-widget" aria-label="Job Quest AI companion">
+    <section id="ai-panel" class="ai-panel" aria-labelledby="ai-title" hidden>
+      <header class="ai-header">
+        <span class="ai-mascot" aria-hidden="true">🤖</span>
+        <div>
+          <h2 id="ai-title">Quest companion</h2>
+          <p>Career support, powered by AI</p>
+        </div>
+        <button id="ai-close" class="ai-close" type="button" aria-label="Close chat">×</button>
+      </header>
+      <div id="chat-messages" class="chat-messages" aria-live="polite">
+        <p class="chat-bubble assistant-bubble">
+          Hey, adventurer! Upload your CV, then ask me anything about your job hunt.
+        </p>
+      </div>
+      <form id="chat-form" class="chat-form">
+        <label class="visually-hidden" for="chat-input">Message your quest companion</label>
+        <textarea
+          id="chat-input"
+          name="content"
+          rows="2"
+          maxlength="4000"
+          placeholder="Ask a career question… (Enter to send)"
+          required
+        ></textarea>
+        <button class="button" type="submit">Send</button>
+      </form>
+      <p id="chat-status" class="chat-status" role="status" aria-live="polite"></p>
+    </section>
+    <button
+      id="ai-toggle"
+      class="ai-toggle"
+      type="button"
+      aria-label="Open AI quest companion"
+      aria-controls="ai-panel"
+      aria-expanded="false"
+    >🤖</button>
+  </aside>
+</body>
+</html>

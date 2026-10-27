@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job Quest — Sign up</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body class="auth-page">
+  <main class="layout">
+    <section class="intro" aria-label="About Job Quest">
+      <a class="brand" href="index.html" aria-label="Job Quest home">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        <span>Job Quest</span>
+      </a>
+
+      <div>
+        <p class="eyebrow">Your next chapter starts here</p>
+        <h1>Turn small steps into momentum.</h1>
+        <p class="intro-copy">
+          Build your job-search habit, keep your opportunities in one place,
+          and celebrate each milestone along the way.
+        </p>
+
+        <div class="quest-card">
+          <div class="quest-top">
+            <span>Your journey starts with one step</span>
+            <span class="badge">NEW QUEST</span>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-panel">
+      <p class="eyebrow">Create your account</p>
+      <h2>Start your quest</h2>
+      <p class="form-hint">
+        Sign up to start tracking your job search.
+      </p>
+
+      <form id="register-form">
+        <label>
+          Email
+          <input
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+          >
+        </label>
+
+        <label>
+          Password
+          <input
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            minlength="8"
+            required
+          >
+        </label>
+
+        <p class="form-hint">
+          Use at least 8 characters, including uppercase and lowercase
+          letters, a number, and a special character.
+        </p>
+
+        <button class="button" type="submit">Create account</button>
+      </form>
+
+      <p id="result" aria-live="polite"></p>
+      <p class="auth-switch">
+        Already have an account? <a href="login.html">Log in</a>
+      </p>
+      <p class="footer-note"><a href="index.html">Back to home</a></p>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+    const form = document.querySelector("#register-form");
+    const result = document.querySelector("#result");
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    function formatError(detail) {
+      if (Array.isArray(detail)) {
+        return detail
+          .map((item) => `${item.loc.slice(1).join(".")}: ${item.msg}`)
+          .join("; ");
+      }
+
+      if (typeof detail === "string") {
+        return detail;
+      }
+
+      return "Registration failed. Please try again.";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      result.className = "";
+      result.textContent = "Creating your account…";
+      submitButton.disabled = true;
+
+      try {
+        const response = await fetch(`${API_BASE}/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: form.elements.email.value,
+            password: form.elements.password.value
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          result.className = "error";
+          result.textContent =
+            `Could not create account (${response.status}): ${formatError(data.detail)}`;
+          return;
+        }
+
+        result.className = "success";
+        result.textContent =
+          `Account created for ${data.email}. You can now log in.`;
+        form.reset();
+      } catch (error) {
+        console.error(error);
+        result.className = "error";
+        result.textContent =
+          "The request could not be completed. Check the browser console and Network tab.";
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
