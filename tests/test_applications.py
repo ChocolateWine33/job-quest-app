@@ -35,12 +35,11 @@ def test_add_duplicate_application_returns_409(client, auth_headers):
 
 
 def test_same_application_allowed_for_different_users(client, auth_headers, other_auth_headers):
-    # the duplicate rule must be per user, not global
     create_application(client, auth_headers)
-    create_application(client, other_auth_headers)  # must not raise 409
+    create_application(client, other_auth_headers)
 
 
-# ---------- isolation: user B can't touch user A's data ----------
+# ---------- isolation ----------
 
 def test_list_only_returns_own_applications(client, auth_headers, other_auth_headers):
     create_application(client, auth_headers)
@@ -57,3 +56,80 @@ def test_other_user_cannot_update_application(client, auth_headers, other_auth_h
         json={"job_description": CHANGED_JD},
         headers=other_auth_headers,
     )
+
+    assert response.status_code == 404
+    mine = list_applications(client, auth_headers)
+    assert mine[0]["job_description"] == LONG_JD
+
+
+def test_other_user_cannot_delete_application(client, auth_headers, other_auth_headers):
+    app = create_application(client, auth_headers)
+
+    response = client.delete(f"/delete_application/{app['id']}", headers=other_auth_headers)
+
+    assert response.status_code == 404
+    assert len(list_applications(client, auth_headers)) == 1
+
+
+# ---------- update (PATCH) ----------
+
+def test_patch_only_job_description_keeps_other_fields(client, auth_headers):
+    app = create_application(client, auth_headers, job_description=LONG_JD)
+
+    response = client.patch(
+        f"/update_application/{app['id']}",
+        json={"job_description": CHANGED_JD},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["job_description"] == CHANGED_JD
+    assert data["status"] == app["status"]
+
+
+def test_patch_only_status_keeps_job_description(client, auth_headers):
+    app = create_application(client, auth_headers, job_description=LONG_JD)
+
+    response = client.patch(
+        f"/update_application/{app['id']}",
+        json={"status": "Interview"},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "Interview"
+    assert response.json()["job_description"] == LONG_JD
+
+
+def test_patch_nonexistent_application_returns_404(client, auth_headers):
+    response = client.patch(
+        "/update_application/9999",
+        json={"job_description": LONG_JD},
+        headers=auth_headers,
+    )
+    assert response.status_code == 404
+
+
+# ---------- delete ----------
+
+def test_delete_application_removes_it(client, auth_headers):
+    app = create_application(client, auth_headers)
+
+    response = client.delete(f"/delete_application/{app['id']}", headers=auth_headers)
+
+    assert response.status_code == 200
+    assert list_applications(client, auth_headers) == []
+
+
+def test_delete_nonexistent_application_returns_404(client, auth_headers):
+    response = client.delete("/delete_application/9999", headers=auth_headers)
+    assert response.status_code == 404
+
+
+# ---------- auth ----------
+
+def test_applications_routes_require_token(client):
+    assert client.get("/get_applications").status_code == 401
+    assert client.post("/add_application", json={}).status_code == 401
+    assert client.delete("/delete_application/1").status_code == 401
