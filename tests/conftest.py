@@ -31,3 +31,17 @@ def client(setup_database):           # asking for setup_database makes pytest r
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()  # undo the override after the test
+
+
+def make_auth_headers(client, email, password="NewAcc2026!!"):
+    client.post("/register", json={"email": email, "password": password})
+    response = client.post("/login", data={"username": email, "password": password})
+    return {"Authorization": f"Bearer {response.json()['access_token']}"}
+
+@pytest.fixture
+def auth_headers(client):
+    return make_auth_headers(client, "chocolate@test.com")
+
+@pytest.fixture
+def other_auth_headers(client):
+    return make_auth_headers(client, "other@test.com")
