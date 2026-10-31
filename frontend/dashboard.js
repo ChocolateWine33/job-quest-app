@@ -1,4 +1,3 @@
-const API_BASE = "http://127.0.0.1:8000";
 const token = localStorage.getItem("jobQuestToken");
 
 const dashboardMessage = document.querySelector("#dashboard-message");
@@ -106,7 +105,7 @@ async function apiRequest(path, { method = "GET", body } = {}) {
     requestBody = JSON.stringify(body);
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(`${window.API_URL}${path}`, {
     method,
     headers,
     body: requestBody

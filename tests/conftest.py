@@ -1,3 +1,7 @@
+import os
+
+os.environ["DATABASE_URL"] = "postgresql://postgres:test@localhost:5433/jobquest_test"
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import sessionmaker
@@ -14,7 +18,7 @@ SessionLocal = sessionmaker(bind=engine, autoflush=True)
 @pytest.fixture
 def setup_database():
     BASE.metadata.create_all(bind=engine)
-    yield 
+    yield
     BASE.metadata.drop_all(bind=engine)
 
 @pytest.fixture

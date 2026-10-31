@@ -62,8 +62,8 @@
     </section>
   </main>
 
+  <script src="config.js"></script>
   <script>
-    const API_BASE = "http://127.0.0.1:8000";
     const form = document.querySelector("#login-form");
     const result = document.querySelector("#result");
 
@@ -73,7 +73,7 @@
       result.textContent = "Logging in…";
 
       try {
-        const loginResponse = await fetch(`${API_BASE}/login`, {
+        const loginResponse = await fetch(`${window.API_URL}/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
