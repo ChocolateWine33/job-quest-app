@@ -1,5 +1,5 @@
 # Job Quest
-![Tests](https://github.com/ChocolateWine33/job-quest-app/actions/workflows/tests.yml/badge.svg)
+![Tests](https://github.com/MarwanGamal33/job-quest-app/actions/workflows/tests.yml/badge.svg)
 
 An AI-powered job application tracker and career assistant. Track every application, keep a daily streak going, level up as you progress, and get honest AI feedback on how your CV fits each job.
 
