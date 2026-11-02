@@ -1,5 +1,8 @@
 # Job Quest
 ![Tests](https://github.com/MarwanGamal33/job-quest-app/actions/workflows/tests.yml/badge.svg)
+![Dashboard Overview](docs/dashboard1.png)
+![AI Analysis Result](docs/dashboard2.png)
+![Application Tracker](docs/dashboard3.png)
 
 An AI-powered job application tracker and career assistant. Track every application, keep a daily streak going, level up as you progress, and get honest AI feedback on how your CV fits each job.
 
