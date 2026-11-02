@@ -1,6 +1,9 @@
 # Job Quest
 ![Tests](https://github.com/MarwanGamal33/job-quest-app/actions/workflows/tests.yml/badge.svg)
 
+**Live demo:** [job-quest-app-frontend.vercel.app](https://job-quest-app-frontend.vercel.app/)
+
+> The demo runs on free hosting, so the first request after a quiet period can take a few seconds.
 <p align="center">
   <img src="docs/dashboard1.png" width="30%" alt="Dashboard Overview" />
   <img src="docs/dashboard2.png" width="30%" alt="AI Analysis Result" />
