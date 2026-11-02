@@ -1,9 +1,11 @@
 # Job Quest
 ![Tests](https://github.com/MarwanGamal33/job-quest-app/actions/workflows/tests.yml/badge.svg)
-![Dashboard Overview](docs/dashboard1.png)
-![AI Analysis Result](docs/dashboard2.png)
-![Application Tracker](docs/dashboard3.png)
 
+<p align="center">
+  <img src="docs/dashboard1.png" width="30%" alt="Dashboard Overview" />
+  <img src="docs/dashboard2.png" width="30%" alt="AI Analysis Result" />
+  <img src="docs/dashboard3.png" width="30%" alt="Application Tracker" />
+</p>
 An AI-powered job application tracker and career assistant. Track every application, keep a daily streak going, level up as you progress, and get honest AI feedback on how your CV fits each job.
 
 Built with **FastAPI**, **PostgreSQL**, and **Google Gemini**, with a lightweight vanilla JavaScript frontend.
